@@ -1,0 +1,28 @@
+h1 {
+    color: #FF4500
+}
+
+body {
+    background: #000080;
+}
+
+p {
+    color:rgb(255, 255, 255);
+    background-color: black;
+    border: solid; 
+    padding: 4vw;
+}
+
+#special{
+    color: greenyellow;
+    background-color: green;
+    padding: 10-x;
+}
+
+.description{
+    background-color: gold;
+    border: solid;
+    border-color: black;
+    margin: 50px;
+    color: blue;
+}

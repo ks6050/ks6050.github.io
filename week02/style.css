@@ -1,0 +1,90 @@
+.background{
+    background: #3F5EFB;
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+}
+
+.head1{
+    color:moccasin;
+    text-align: center;
+    margin-top: 10%;
+    font-weight: bold;
+    font-size: 3em;
+    text-shadow: 0.07em 0.07em 0.05em black;
+}
+
+.head2{
+    color:sandybrown;
+    text-align: center;
+    margin-top: 50px;
+    font-weight: bold;
+    font-size: 2em;
+    text-shadow: 0.07em 0.07em 0.05em black;
+}
+
+.body1{
+    font-weight: bold;
+    font-size: 1.5em;
+    color: white;
+    padding: 50px;
+    text-shadow: 0.07em 0.07em 0.05em black;
+    background-image: url("cat.gif");
+    border-style: groove;
+    border-color: red;
+    border-width: 5px;
+    border-radius: 10px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 5%;
+}
+
+.parent{
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+}
+
+#child1{
+    text-align: center;
+    width: 50%;
+}
+
+#child2{
+    text-align: center;
+    flex: 1;
+}
+
+.div1{
+    color:sandybrown;
+    text-align: center;
+    margin-top: 50px;
+    font-weight: bold;
+    font-size: 5em;
+    text-shadow: 0.07em 0.07em 0.05em black;
+}
+
+#butt1{
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    padding: 20px 50px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 50px;
+    cursor: pointer;
+}
+
+#butt2{
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    color: black;
+    padding: 20px 50px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 50px;
+    cursor: pointer;
+}
+
+#butt1:hover{background-color: #04AA6D;color: white;}
+#butt2:hover{background-color: #f44336;color: white;}
