@@ -1,0 +1,30 @@
+
+
+.head1{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color:;
+    font-size: 50px;
+    margin-top: 10vh;
+    margin-left: 30vw;
+}
+
+.d1{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color:;
+    display: flex;
+    flex-direction: row;
+    margin-left: 30vw;
+    position: absolute;
+}
+
+.p1{
+    
+    font-size: 25px;
+    padding-right: 5vw;
+    padding-top: 10vh;
+}
+
+.pic1{
+margin-right: 15vw;
+width: 30vw;
+}
