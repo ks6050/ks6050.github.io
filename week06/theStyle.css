@@ -1,0 +1,70 @@
+.geo-regular {
+  font-family: "Geo", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.geo-regular-italic {
+  font-family: "Geo", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.headd{
+    text-align: center;
+}
+
+.head1{
+    display: inline-block;
+    padding: 20px 30px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 5vh;
+    color: black;
+}
+
+.d1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.image1{
+    max-height: 50vh;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+
+.butt{
+    background-color: #444;
+    color: white;
+    border: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 5vw;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.5s;
+    width: 130px;
+    height: 50px;
+}
+
+.butt:hover{
+    background-color: brown;
+}
