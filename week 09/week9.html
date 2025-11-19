@@ -1,0 +1,71 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geo:ital@0;1&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Training Your Feed</h1>
+        <p class="intro">
+            Click on the type of content you want.  
+            Watch how the feed starts to favor one thing.
+        </p>
+
+        <div class="buttons">
+            <div class="option">
+                <img src="animals.jpg" alt="Animals" class="optionImg">
+                <button data-topic="Animals">Animals</button>
+            </div>
+
+            <div class="option">
+                <img src="sports.jpg" alt="Sports" class="optionImg">
+                <button data-topic="Sports">Sports</button>
+            </div>
+
+            <div class="option">
+                <img src="drama.jpg" alt="Drama" class="optionImg">
+                <button data-topic="Drama">Drama</button>
+            </div>
+        </div>
+
+
+        <p id="feedback" class="feedback">
+            Your feed does not know what you like yet.
+        </p>
+
+        <div class="summary">
+            <h2>Your engagement so far</h2>
+            <ul id="statsList">
+                <li>Animals: 0</li>
+                <li>Sports: 0</li>
+                <li>Drama: 0</li>
+            </ul>
+            <p id="topChoice" class="top-choice">
+                No clear favorite yet.
+            </p>
+        </div>
+
+        <div class="explain">
+            <h2>Reflection</h2>
+            <p>
+                The Social Dilemma is an interesting watch because it explains how social media is designed to constantly pull you back 
+                in using engagement tactics. What stood out the most to me was the idea that every tap or pause becomes a signal that teaches 
+                the algorithm what to feed you next. It isn’t just random content showing up on your screen; it’s a system that is always 
+                adjusting itself based on what keeps you there the longest.
+                <br><br>
+                It is interesting to think about that you can actually manipulate this process. By only interacting with specific types of posts, 
+                you can train the app to show you more of what you care about, even though most people don’t realize they are shaping their own 
+                bubble in real time.
+                <br><br>
+                It makes you think about how easily your online experience can be shaped by the smallest interactions, and how much of what you see is 
+                influenced by systems working behind the scenes without you ever noticing.
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
