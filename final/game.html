@@ -1,28 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF 8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Web Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Micro+5&display=swap" rel="stylesheet">
 </head>
 
 <body class="gamePage">
 
-    <!-- hearts -->
-    <div id="ui">
-        <div id="hearts">
-            <img src="heart.png" class="heart">
-            <img src="heart.png" class="heart">
-            <img src="heart.png" class="heart">
-            <img src="heart.png" class="heart">
-            <img src="heart.png" class="heart">
-        </div>
+  <!-- ui -->
+  <div id="ui">
+    <div id="hearts"></div>
+    <div id="level">Lv <span id="lvl">1</span></div>
+    <div id="xp">XP: <span id="xpVal">0</span></div>
+    <div id="timer">0:00</div>
+  </div>
+
+  <!-- level up menu -->
+  <div id="levelUp" class="hidden">
+    <div class="box">
+      <p>Choose an upgrade:</p>
+      <button id="upSpeed" class="btn">Movement Speed</button>
+      <button id="upProj" class="btn">Projectile Count</button>
+      <button id="upFire" class="btn">Fire Rate</button>
     </div>
+  </div>
 
-    <!-- player -->
-    <img id="player" src="player.png" alt="Player">
+  <!-- end screen -->
+  <div id="endScreen" class="hidden">
+    <div class="box">
+      <p id="endMsg"></p>
+      <button onclick="location.href='index.html'">Restart</button>
+    </div>
+  </div>
 
-    <script src="game.js"></script>
+  <img id="player" src="player.png" alt="player">
+
+  <script src="game.js"></script>
 </body>
 </html>
