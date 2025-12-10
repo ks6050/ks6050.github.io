@@ -3,35 +3,28 @@ const heartsDiv = document.getElementById("hearts");
 const xpVal = document.getElementById("xpVal");
 const lvlVal = document.getElementById("lvl");
 const timerEl = document.getElementById("timer");
-
 const levelUpScreen = document.getElementById("levelUp");
 const endScreen = document.getElementById("endScreen");
 const endMsg = document.getElementById("endMsg");
-
 const upSpeed = document.getElementById("upSpeed");
 const upProj = document.getElementById("upProj");
 const upFire = document.getElementById("upFire");
 
 
-
+//initial stats
 let px = innerWidth / 2;
 let py = innerHeight / 2;
-
 let moveX = 0;
 let moveY = 0;
-
 let speed = 4;
 let facingX = 1;
 let facingY = 0;
-
 let projectileCount = 1;
 let shotInterval = 500; //ms
-
 let health = 5;
 let xp = 0;
 let level = 1;
 let xpNeed = 5;
-
 let paused = false;
 let ended = false;
 
@@ -41,8 +34,7 @@ let projectiles = [];
 let enemyShots = [];
 let xpOrbs = [];
 
-// ==== DRAW HEARTS ====
-
+//draw hearts
 function drawHearts() {
   heartsDiv.innerHTML = "";
   for (let i = 0; i < health; i++) {
@@ -53,7 +45,6 @@ function drawHearts() {
 }
 
 //input
-
 let up = false, down = false, left = false, right = false;
 
 onkeydown = e => {
@@ -125,32 +116,22 @@ function createPlayerBullet(x, y, angle, speedVal) {
   img.className = "projectile";
   document.body.appendChild(img);
 
-  projectiles.push({
-    el: img,
-    x,
-    y,
-    vx: Math.cos(angle) * speedVal,
-    vy: Math.sin(angle) * speedVal
-  });
+  projectiles.push({el: img, x, y, vx: Math.cos(angle) * speedVal, vy: Math.sin(angle) * speedVal});
 }
 
 //fire bullets in a fan based on projectileCount
 function firePlayerProjectiles() {
   const len = Math.hypot(facingX, facingY);
   if (len === 0) return;
-
   const pxCenter = px;
   const pyCenter = py;
   const baseAngle = Math.atan2(facingY, facingX);
   const bulletSpeed = 6;
-
-
   //2–7 projectiles = fan in front
   if (projectileCount > 1) {
     const totalSpread = Math.PI / 3; // 60 degrees
     const step = totalSpread / (projectileCount - 1);
     const startAngle = baseAngle - totalSpread / 2;
-
     for (let i = 0; i < projectileCount; i++) {
       const angle = startAngle + step * i;
       createPlayerBullet(pxCenter, pyCenter, angle, bulletSpeed);
@@ -163,12 +144,10 @@ function firePlayerProjectiles() {
 }
 
 //level up
-
 function showLevelUp() {
   paused = true;
   levelUpScreen.classList.add("show");
 }
-
 function closeLevelUp() {
   levelUpScreen.classList.remove("show");
   paused = false;
@@ -193,7 +172,6 @@ upFire.onclick = () => {
 };
 
 //game end
-
 function endGame(win) {
   ended = true;
   paused = true;
@@ -202,15 +180,12 @@ function endGame(win) {
 }
 
 //loop
-
 let startTime = 0;
 let lastSpawn = 0;
 let lastShot = 0;
 
 function loop(t) {
-
   window.addEventListener("click", startMusicOnce);
-
   function startMusicOnce() {
       const music = document.getElementById("bgMusic");
       music.volume = 0.5;
@@ -273,7 +248,7 @@ function loop(t) {
     }
 
     //spawn enemy
-    const spawnInterval = Math.max(1200 - Math.floor(seconds / 60) * 250, 400);
+    const spawnInterval = Math.max(1200 - Math.floor(seconds / 60) * 400, 200);
     if (t - lastSpawn > spawnInterval) {
       lastSpawn = t;
       spawnEnemy(seconds);
