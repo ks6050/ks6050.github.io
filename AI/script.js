@@ -1,8 +1,8 @@
 // ============================================
 // PASTE YOUR API KEYS BELOW
 // ============================================
-const CLAUDE_API_KEY = "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";
-const OPENAI_API_KEY = "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";
+const CLAUDE_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 
 // State
 let selectedLens = null;
