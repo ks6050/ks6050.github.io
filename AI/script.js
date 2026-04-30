@@ -1,8 +1,6 @@
 // ============================================
-// PASTE YOUR API KEYS BELOW
+// NO API KEYS NEEDED — handled by server
 // ============================================
-const CLAUDE_API_KEY = "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";
-const OPENAI_API_KEY = "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";
 
 // State
 let selectedLens = null;
@@ -43,9 +41,9 @@ Rules:
 };
 
 const lensImageStyle = {
-    agitate: "dark, dramatic, threatening, high contrast, red and orange tones, photojournalism style, urgent, chaotic",
-    comfort: "bright, warm, hopeful, soft lighting, golden hour, calm, peaceful, reassuring, professional photography",
-    suppress: "dull, grey, mundane, flat lighting, boring, unremarkable, stock photo style, forgettable, desaturated"
+    agitate: "editorial photojournalism, raw, unfiltered, tense moment captured, handheld camera feel, slightly underexposed",
+    comfort: "professional editorial photography, well-composed, clean, polished, steady and assured framing",
+    suppress: "generic stock photography, unremarkable, could be any day, forgettable corporate imagery"
 };
 
 // ============================================
@@ -62,7 +60,6 @@ const PROXIES = [
 // ============================================
 const urlInput = document.getElementById("url-input");
 const submitBtn = document.getElementById("submit-btn");
-const lensSelect = document.getElementById("lens-select");
 const loadingEl = document.getElementById("loading");
 const errorEl = document.getElementById("error");
 const outputEl = document.getElementById("output");
@@ -72,19 +69,68 @@ const outputMeta = document.getElementById("output-meta");
 const outputBody = document.getElementById("output-body");
 const outputImageContainer = document.getElementById("output-image-container");
 const outputImage = document.getElementById("output-image");
+const lensDisplay = document.getElementById("lens-display");
+const lensPrev = document.getElementById("lens-prev");
+const lensNext = document.getElementById("lens-next");
 
 // ============================================
-// LENS SELECTION
+// UPDATE SUBMIT BUTTON
 // ============================================
-lensSelect.addEventListener("change", () => {
-    selectedLens = lensSelect.value;
-    updateSubmitButton();
-});
+function updateSubmitButton() {
+    submitBtn.disabled = !(urlInput.value.trim() && selectedLens);
+}
 
 urlInput.addEventListener("input", updateSubmitButton);
 
-function updateSubmitButton() {
-    submitBtn.disabled = !(urlInput.value.trim() && selectedLens);
+// ============================================
+// LENS SELECTION (arrow buttons)
+// ============================================
+const lensOptions = [
+    { value: null, label: "Select a lens" },
+    { value: "agitate", label: "Agitate" },
+    { value: "comfort", label: "Comfort" },
+    { value: "suppress", label: "Suppress" }
+];
+let lensIndex = 0;
+
+function updateLensDisplay() {
+    lensDisplay.textContent = lensOptions[lensIndex].label;
+    selectedLens = lensOptions[lensIndex].value;
+    if (lensIndex === 0) {
+        lensDisplay.classList.remove("active");
+    } else {
+        lensDisplay.classList.add("active");
+    }
+    updateSubmitButton();
+}
+
+lensPrev.addEventListener("click", () => {
+    lensIndex = (lensIndex - 1 + lensOptions.length) % lensOptions.length;
+    updateLensDisplay();
+});
+
+lensNext.addEventListener("click", () => {
+    lensIndex = (lensIndex + 1) % lensOptions.length;
+    updateLensDisplay();
+});
+
+// ============================================
+// THEME DETECTION
+// ============================================
+const siteThemes = {
+    "npr.org": { theme: "theme-npr", logo: "NPR" },
+    "cnn.com": { theme: "theme-cnn", logo: "CNN" },
+    "bbc.com": { theme: "theme-bbc", logo: "BBC News" },
+    "bbc.co.uk": { theme: "theme-bbc", logo: "BBC News" },
+    "apnews.com": { theme: "theme-ap", logo: "AP News" },
+    "reuters.com": { theme: "theme-reuters", logo: "Reuters" }
+};
+
+function detectTheme(url) {
+    for (const [domain, config] of Object.entries(siteThemes)) {
+        if (url.includes(domain)) return config;
+    }
+    return { theme: "", logo: "News" };
 }
 
 // ============================================
@@ -102,16 +148,16 @@ submitBtn.addEventListener("click", async () => {
         // Step 1: Fetch article via proxy
         const articleText = await fetchArticle(url);
         if (!articleText || articleText.length < 100) {
-            throw new Error("Could not extract article text. Try pasting a different NPR article URL.");
+            throw new Error("Could not extract article text. Try pasting a different article URL.");
         }
 
-        // Step 2: Send to Claude API
-        const rewritten = await rewriteWithClaude(articleText, selectedLens);
+        // Step 2: Send to server API
+        const rewritten = await rewriteArticle(articleText, selectedLens);
 
         // Step 3: Display text result
         displayOutput(rewritten);
 
-        // Step 4: Generate image with Gemini
+        // Step 4: Generate image
         generateImage(rewritten.imagePrompt, selectedLens);
     } catch (err) {
         showError(err.message);
@@ -183,60 +229,33 @@ async function fetchArticle(url) {
 }
 
 // ============================================
-// REWRITE WITH CLAUDE API
+// REWRITE VIA SERVER API
 // ============================================
-async function rewriteWithClaude(articleText, lens) {
-    const systemPrompt = lensPrompts[lens];
-
-    const userMessage = `Here is the original news article. Rewrite it according to your instructions.
-
-${articleText}
-
-Respond in this exact format and nothing else:
-
-HEADLINE: [your rewritten headline]
-SUBTITLE: [a one-sentence subtitle]
-AUTHOR: [a realistic fake author name]
-DATE: [today's date formatted naturally]
-IMAGE_PROMPT: [a detailed image prompt that would work as a news article header photo, matching the tone and framing of your rewrite. Describe a realistic photojournalism-style scene that captures the mood of your version of the article. Do not mention any real people by name. Keep it under 50 words.]
-BODY:
-[your rewritten article body, with paragraph breaks]`;
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+async function rewriteArticle(articleText, lens) {
+    const response = await fetch("/api/rewrite", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-api-key": CLAUDE_API_KEY,
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-direct-browser-access": "true"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            model: "claude-haiku-4-5-20251001",
-            max_tokens: 2000,
-            messages: [
-                {
-                    role: "user",
-                    content: systemPrompt + "\n\n" + userMessage
-                }
-            ]
+            articleText: articleText,
+            lens: lens,
+            systemPrompt: lensPrompts[lens]
         })
     });
 
     if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error?.message || "Claude API request failed. Check your API key.");
+        throw new Error(errData.error || "Rewrite failed. Please try again.");
     }
 
     const data = await response.json();
     const text = data.content[0].text;
-
-    return parseClaudeResponse(text);
+    return parseResponse(text);
 }
 
 // ============================================
-// PARSE CLAUDE'S RESPONSE
+// PARSE RESPONSE
 // ============================================
-function parseClaudeResponse(text) {
+function parseResponse(text) {
     const headlineMatch = text.match(/HEADLINE:\s*(.+)/);
     const subtitleMatch = text.match(/SUBTITLE:\s*(.+)/);
     const authorMatch = text.match(/AUTHOR:\s*(.+)/);
@@ -255,7 +274,7 @@ function parseClaudeResponse(text) {
 }
 
 // ============================================
-// GENERATE IMAGE WITH GEMINI
+// GENERATE IMAGE VIA SERVER API
 // ============================================
 async function generateImage(imagePrompt, lens) {
     if (!imagePrompt) return;
@@ -263,34 +282,25 @@ async function generateImage(imagePrompt, lens) {
     const fullPrompt = `Photojournalism-style news photo: ${imagePrompt}, ${lensImageStyle[lens]}`;
 
     try {
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("/api/image", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "dall-e-3",
-                prompt: fullPrompt,
-                n: 1,
-                size: "1024x1024",
-                quality: "standard"
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: fullPrompt })
         });
 
         if (!response.ok) {
-            console.log("OpenAI error:", await response.text());
+            console.log("Image generation failed");
             return;
         }
 
         const data = await response.json();
-        const imageUrl = data.data?.[0]?.url;
+        const imagePart = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
 
-        if (imageUrl) {
-            outputImage.src = imageUrl;
+        if (imagePart) {
+            outputImage.src = `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
             outputImageContainer.classList.remove("hidden");
         } else {
-            console.log("No image URL in response");
+            console.log("No image data in response");
         }
     } catch (err) {
         console.log("Image generation error:", err);
@@ -301,6 +311,13 @@ async function generateImage(imagePrompt, lens) {
 // DISPLAY OUTPUT
 // ============================================
 function displayOutput(article) {
+    const url = urlInput.value.trim();
+    const themeConfig = detectTheme(url);
+    
+    const wrapper = document.getElementById("output-wrapper");
+    wrapper.className = "output-wrapper " + themeConfig.theme;
+    document.getElementById("site-logo").textContent = themeConfig.logo;
+
     outputHeadline.textContent = article.headline;
     outputSubtitle.textContent = article.subtitle;
     outputMeta.textContent = `By ${article.author} · ${article.date}`;
@@ -309,7 +326,8 @@ function displayOutput(article) {
     outputBody.innerHTML = paragraphs.map(p => `<p>${p.trim()}</p>`).join("");
 
     outputImageContainer.classList.add("hidden");
-    outputEl.classList.remove("hidden");
+    document.getElementById("input-wrapper").classList.add("collapsed");
+    wrapper.classList.remove("hidden");
 }
 
 // ============================================
@@ -317,6 +335,7 @@ function displayOutput(article) {
 // ============================================
 function showLoading() {
     loadingEl.classList.remove("hidden");
+    document.getElementById("input-wrapper").classList.add("collapsed");
 }
 
 function hideLoading() {
@@ -333,6 +352,6 @@ function hideError() {
 }
 
 function hideOutput() {
-    outputEl.classList.add("hidden");
+    document.getElementById("output-wrapper").classList.add("hidden");
     outputImageContainer.classList.add("hidden");
 }
